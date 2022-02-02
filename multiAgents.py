@@ -72,25 +72,24 @@ class ReflexAgent(Agent):
         newFood = successorGameState.getFood().asList()
         newGhostStates = successorGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
-        """"
+
         "*** YOUR CODE HERE ***"
         # Retreives coordinates of remaining food
         remainingFood = successorGameState.getFood().asList()
         infinite = float('inf')
         
         # Loops through remaining food to find minimum distance to food
-        for food in remainingFood:
-            infinite = min(infinite, manhattanDistance(newPos, food))
-
-        for ghost in successorGameState.getGhostPositions():
-            if(manhattanDistance(newPos, ghost) < 3):
+        for foodPos in remainingFood:
+            infinite = min(infinite, manhattanDistance(newPos, foodPos))
+        
+        # Loops through locations of ghosts and if they are within a distance of 3 avoid moving that direction
+        for ghostPos in successorGameState.getGhostPositions():
+            if(manhattanDistance(newPos, ghostPos) < 3):
                 return -float('inf')
-
+        
+        # Recipricol so shortest distance is actually greatest
         return successorGameState.getScore() + 1.0/infinite
-        """
-        print(currentGameState.getScore())
-        #print(-float('inf'))
-        return successorGameState.getScore()
+    
 def scoreEvaluationFunction(currentGameState):
     """
     This default evaluation function just returns the score of the state.
