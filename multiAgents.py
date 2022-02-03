@@ -41,6 +41,8 @@ class ReflexAgent(Agent):
         # Collect legal moves and successor states
         legalMoves = gameState.getLegalActions()
 
+        #print(legalMoves)
+
         # Choose one of the best actions
         scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
         bestScore = max(scores)
@@ -87,7 +89,7 @@ class ReflexAgent(Agent):
             if(manhattanDistance(newPos, ghostPos) < 3):
                 return -float('inf')
         
-        # Recipricol so shortest distance is actually greatest
+        # Reciprocal so shortest distance is actually greatest
         return successorGameState.getScore() + 1.0/infinite
     
 def scoreEvaluationFunction(currentGameState):
@@ -129,7 +131,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         """
         Returns the minimax action from the current gameState using self.depth
         and self.evaluationFunction.
-
+        
         Here are some method calls that might be useful when implementing minimax.
 
         gameState.getLegalActions(agentIndex):
@@ -149,7 +151,29 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns whether or not the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        for pacman in range(self.depth):
+            # East, South
+            pacmanLegalActions = gameState.getLegalActions(0)
+            dict = {'North':float('inf'), 'East':float('inf'), 'South':-float('inf'), 'West':float('inf'), 'Stop':float('inf')}
+            for action in pacmanLegalActions:
+                # East, South
+                totalScore = 0
+                currentGameState = gameState.generateSuccessor(0, action)
+                for ghosts in range(1, currentGameState.getNumAgents()):
+                    ghostLegalActions = currentGameState.getLegalActions(ghosts)
+                    smallest = float('inf')
+                    for ghostMove in ghostLegalActions:
+                        smallest = min(smallest, currentGameState.generateSuccessor(ghosts, ghostMove).getScore())
+
+                    totalScore += smallest
+                
+                if(dict[action] < totalScore):
+                    dict[action] = totalScore
+                
+        # print(self.depth)
+        return max(dict, key = dict.get)
+        # util.raiseNotDefined()
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
