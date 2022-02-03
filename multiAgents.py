@@ -160,16 +160,18 @@ class MinimaxAgent(MultiAgentSearchAgent):
                 # East, South
                 totalScore = 0
                 currentGameState = gameState.generateSuccessor(0, action)
-                for ghosts in range(1, currentGameState.getNumAgents()):
-                    ghostLegalActions = currentGameState.getLegalActions(ghosts)
+                for ghost in range(1, currentGameState.getNumAgents()):
+                    ghostLegalActions = currentGameState.getLegalActions(ghost)
                     smallest = float('inf')
                     for ghostMove in ghostLegalActions:
-                        smallest = min(smallest, currentGameState.generateSuccessor(ghosts, ghostMove).getScore())
+                        smallest = min(smallest, currentGameState.generateSuccessor(ghost, ghostMove).getScore())
 
                     totalScore += smallest
-                
+
+                '''
                 if(dict[action] < totalScore):
                     dict[action] = totalScore
+                '''
                 
         # print(self.depth)
         return max(dict, key = dict.get)
