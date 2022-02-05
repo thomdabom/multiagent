@@ -145,7 +145,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
     def miniMax(self, depth, gameState):
         bestAction, bestVal = '', -float('inf')
         for action in gameState.getLegalActions(0) :
-            val = self.minimumState(depth, gameState.generateSuccessor(0, action))
+            val = self.minimumState(depth, gameState.generateSuccessor(0, action), gameState.getNumAgents() - 1)
             # print(action, val)
             if val > bestVal :
                 bestAction = action
@@ -160,21 +160,22 @@ class MinimaxAgent(MultiAgentSearchAgent):
         bestAction = -float('inf')
 
         for action in gameState.getLegalActions(0):
-            successorAction = self.minimumState(depth, gameState.generateSuccessor(0, action))
+            successorAction = self.minimumState(depth, gameState.generateSuccessor(0, action), gameState.getNumAgents() - 1)
             bestAction = max(bestAction, successorAction)
         # print('Best', bestAction)
         return bestAction
 
-    def minimumState(self, depth, gameState):
+    def minimumState(self, depth, gameState, agentIndex):
+        if agentIndex == 0 :
+            return self.maximumState(depth + 1, gameState)
         if gameState.isWin() or gameState.isLose() or depth == (self.depth):
             # print('Score', self.evaluationFunction(gameState), 'Depth', depth)
             return self.evaluationFunction(gameState)
         worstAction = float('inf')
         
-        for ghost in range(1, gameState.getNumAgents()) :
-            for action in gameState.getLegalActions(ghost):
-                successorAction = self.maximumState(depth + 1, gameState.generateSuccessor(ghost, action))
-                worstAction = min(worstAction, successorAction)
+        for action in gameState.getLegalActions(agentIndex):
+            successorAction = self.minimumState(depth, gameState.generateSuccessor(agentIndex, action), agentIndex - 1)
+            worstAction = min(worstAction, successorAction)
         # print('Worst', worstAction)
         return worstAction
         
