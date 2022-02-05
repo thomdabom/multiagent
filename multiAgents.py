@@ -146,14 +146,15 @@ class MinimaxAgent(MultiAgentSearchAgent):
         bestAction, bestVal = '', -float('inf')
         for action in gameState.getLegalActions(0) :
             val = self.minimumState(depth, gameState.generateSuccessor(0, action))
-            if val >= bestVal :
+            # print(action, val)
+            if val > bestVal :
                 bestAction = action
                 bestVal = val
         return bestAction
 
     
     def maximumState(self, depth, gameState):
-        if gameState.isWin() or gameState.isLose() or depth == self.depth:
+        if gameState.isWin() or gameState.isLose() or depth == (self.depth):
             # print('Score', self.evaluationFunction(gameState), 'Depth', depth)
             return self.evaluationFunction(gameState)
         bestAction = -float('inf')
@@ -165,7 +166,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         return bestAction
 
     def minimumState(self, depth, gameState):
-        if gameState.isWin() or gameState.isLose() or depth == self.depth:
+        if gameState.isWin() or gameState.isLose() or depth == (self.depth):
             # print('Score', self.evaluationFunction(gameState), 'Depth', depth)
             return self.evaluationFunction(gameState)
         worstAction = float('inf')
