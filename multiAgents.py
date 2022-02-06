@@ -193,11 +193,6 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         legal moves.
         """
         "*** YOUR CODE HERE ***"
-
-        agent = self.index
-        
-        if agent != 0:
-            return random.choice(gameState.getLegalActions(agent))
         
         def expectiMax(depth, gameState, agentIndex):
             
