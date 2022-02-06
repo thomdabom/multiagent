@@ -137,54 +137,35 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns whether or not the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
-        direction = self.miniMax(0, gameState)
-        # print(direction)
-        return direction
-        # return gameState.getLegalActions(0)[1]
-        
-    def miniMax(self, depth, gameState):
-        bestAction, bestVal = '', -float('inf')
-        for action in gameState.getLegalActions(0) :
-            val = self.minimumState(depth, gameState.generateSuccessor(0, action), gameState.getNumAgents() - 1)
-            # print(action, val)
-            if val > bestVal :
-                bestAction = action
-                bestVal = val
-        return bestAction
-
     
-    def maximumState(self, depth, gameState):
-        if gameState.isWin() or gameState.isLose() or depth == (self.depth):
-            # print('Score', self.evaluationFunction(gameState), 'Depth', depth)
-            return self.evaluationFunction(gameState)
-        bestAction = -float('inf')
+        def miniMax(depth, gameState, agentIndex):
+            if agentIndex == gameState.getNumAgents() :
+                depth = depth + 1
+                agentIndex = 0  
+            
+            if gameState.isWin() or gameState.isLose() or depth == (self.depth):
+                return (None, self.evaluationFunction(gameState))
 
-        for action in gameState.getLegalActions(0):
-            successorAction = self.minimumState(depth, gameState.generateSuccessor(0, action), gameState.getNumAgents() - 1)
-            bestAction = max(bestAction, successorAction)
-        # print('Best', bestAction)
-        return bestAction
+            bestAction = None
+            if agentIndex == 0 :
+                value = -float('inf')
+            else :
+                value = float('inf')
+            
+            for action in gameState.getLegalActions(agentIndex):
+                # print("action")
+                successorAction, successorVal = miniMax(depth, gameState.generateSuccessor(agentIndex, action), agentIndex + 1)
+                if agentIndex == 0 and value < successorVal :
+                    bestAction = action
+                    value = successorVal
+                elif agentIndex != 0 and value > successorVal :
+                    bestAction = action
+                    value = successorVal
+            return (bestAction, value)
 
-    def minimumState(self, depth, gameState, agentIndex):
-        if agentIndex == 0 :
-            return self.maximumState(depth + 1, gameState)
-        if gameState.isWin() or gameState.isLose() or depth == (self.depth):
-            # print('Score', self.evaluationFunction(gameState), 'Depth', depth)
-            return self.evaluationFunction(gameState)
-        worstAction = float('inf')
+        action, value = miniMax(0, gameState, 0)
         
-        for action in gameState.getLegalActions(agentIndex):
-            successorAction = self.minimumState(depth, gameState.generateSuccessor(agentIndex, action), agentIndex - 1)
-            worstAction = min(worstAction, successorAction)
-        # print('Worst', worstAction)
-        return worstAction
-        
-        '''
-        pacmanLegalActions = gameState.getLegalActions(0)
-        for action in pacmanLegalActions :
-            recursion(gameState.generatePacmanSuccessor(action), self.depth)
-        '''
-
+        return action
         
         # util.raiseNotDefined()
 
