@@ -232,10 +232,19 @@ def betterEvaluationFunction(currentGameState):
     """
     Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
     evaluation function (question 5).
-    DESCRIPTION: <write something here so we know what you did>
+    DESCRIPTION: get the closest food and add it to the current game score.
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    newPos = currentGameState.getPacmanPosition()
+    remainingFood = currentGameState.getFood().asList()
+    foodVal = float('inf')
+        
+    # Loops through remaining food to find minimum distance to food
+    for foodPos in remainingFood:
+        foodVal = min(foodVal, manhattanDistance(newPos, foodPos))
+    
+    # Reciprocal so shortest distance is actually greatest
+    return currentGameState.getScore() + 1.0/foodVal
 
 # Abbreviation
 better = betterEvaluationFunction
