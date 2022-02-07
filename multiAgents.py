@@ -176,10 +176,39 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 
     def getAction(self, gameState):
         """
-        Returns the minimax action using self.depth and self.evaluationFunction
+        Reuses minimax code.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        def alphaBeta(depth, gameState, agentIndex, a, B):
+            if agentIndex == gameState.getNumAgents() :
+                depth = depth + 1
+                agentIndex = 0  
+            
+            if gameState.isWin() or gameState.isLose() or depth == (self.depth):
+                return (None, self.evaluationFunction(gameState))
+
+            bestAction = None
+            if agentIndex == 0 :
+                value = -float('inf')
+            else :
+                value = float('inf')
+            
+            for action in gameState.getLegalActions(agentIndex):
+                # print("action")
+                successorAction, successorVal = alphaBeta(depth, gameState.generateSuccessor(agentIndex, action), agentIndex + 1, a, B)
+                if agentIndex == 0 and value < successorVal :
+                    bestAction = action
+                    value = successorVal
+                    if value > B : return (bestAction, value)
+                    a = max(a, value)
+                elif agentIndex != 0 and value > successorVal :
+                    bestAction = action
+                    value = successorVal
+                    if value < a : return (bestAction, value)
+                    B = min(B, value)
+            return (bestAction, value)
+
+        return alphaBeta(0, gameState, 0, -float('inf'), float('inf'))[0]
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
@@ -244,6 +273,7 @@ def betterEvaluationFunction(currentGameState):
         foodVal = min(foodVal, manhattanDistance(newPos, foodPos))
     
     # Reciprocal so shortest distance is actually greatest
+    # print(currentGameState.getScore() + 1.0/foodVal)
     return currentGameState.getScore() + 1.0/foodVal
 
 # Abbreviation
